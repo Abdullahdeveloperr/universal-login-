@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="ur-Latn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mobile Ustaad — Sahi Phone. Sahi Qeemat. Sahi Banda.</title>
+<style>
+:root{
+  --c-primary:#0F6E56;
+  --c-primary-dark:#0A4F3D;
+  --c-primary-light:#15916F;
+  --c-primary-tint:#E6F4F0;
+  --c-bg:#F7F8F7;
+  --c-card:#FFFFFF;
+  --c-text:#15201C;
+  --c-text-soft:#5B6B65;
+  --c-text-faint:#92A39C;
+  --c-border:#E3E9E6;
+  --c-correct:#1E8E5A;
+  --c-correct-bg:#E5F6ED;
+  --c-wrong:#C8432F;
+  --c-wrong-bg:#FBE9E6;
+  --c-amber:#C97A1F;
+  --c-amber-bg:#FCEFDD;
+  --c-blue:#2563A8;
+  --c-blue-bg:#E8F0F9;
+  --c-gold:#D4A017;
+  --c-shadow: 0 2px 8px rgba(15,40,32,0.08);
+  --c-shadow-lg: 0 8px 24px rgba(15,40,32,0.14);
+  --radius-sm:10px;
+  --radius-md:16px;
+  --radius-lg:22px;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Nastaliq Urdu", "Noto Sans", Helvetica, Arial, sans-serif;
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family: var(--font-ui);
+  background: var(--c-bg);
+  color: var(--c-text);
+  min-height: 100vh;
+  overscroll-behavior-y: none;
+}
+
+#app{
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--c-bg);
+  position: relative;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ===== Utility ===== */
+.screen{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  animation: screenIn 0.32s cubic-bezier(.2,.8,.2,1);
+  padding-bottom: 28px;
+}
+@keyframes screenIn{
+  from{ opacity:0; transform: translateY(10px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+.hidden{ display:none !important; }
+
+button{ font-family: inherit; cursor:pointer; border:none; background:none; }
+button:focus-visible, a:focus-visible, input:focus-visible{
+  outline: 3px solid var(--c-amber);
+  outline-offset: 2px;
+}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 700;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.btn:active{ transform: scale(0.97); }
+.btn-primary{
+  background: var(--c-primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(15,110,86,0.35);
+}
+.btn-primary:active{ background: var(--c-primary-dark); }
+.btn-ghost{
+  background: var(--c-card);
+  color: var(--c-primary);
+  border: 1.5px solid var(--c-border);
+}
+.btn-block{ width:100%; }
+.btn-amber{
+  background: var(--c-amber);
+  color:#fff;
+  box-shadow: 0 4px 14px rgba(201,122,31,0.32);
+}
+
+.pill{
+  display:inline-flex; align-items:center; gap:5px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ===== Top header (shared) ===== */
+.top-header{
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-dark) 100%);
+  color: #fff;
+  padding: 18px 18px 22px;
+  border-radius: 0 0 26px 26px;
+  position: relative;
+  overflow: hidden;
+}
+.top-header::after{
+  content:"";
+  position:absolute; right:-40px; top:-40px;
+  width:160px; height:160px;
+  background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%);
+}
+.header-row{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 4px;
+}
+.brand-mark{
+  display:flex; align-items:center; gap:10px;
+}
+.brand-logo{
+  width:38px; height:38px; border-radius:11px;
+  background: rgba(255,255,255,0.16);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+  border: 1.5px solid rgba(255,255,255,0.28);
+}
+.brand-name{ font-size:18px; font-weight:800; letter-spacing:0.2px; }
+.brand-tagline{ font-size:11px; opacity:0.82; font-weight:500; margin-top:1px;}
+
+.back-btn{
+  width:36px; height:36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.16);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+}
+.back-btn:active{ background: rgba(255,255,255,0.28); }
+
+.stat-strip{
+  display:flex; gap:10px; margin-top:14px;
+}
+.stat-chip{
+  flex:1;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  text-align:center;
+}
+.stat-chip .v{ font-size:17px; font-weight:800; line-height:1.1; }
+.stat-chip .l{ font-size:10px; opacity:0.78; margin-top:2px; font-weight:600; letter-spacing:0.3px; }
+
+.xp-bar-wrap{ margin-top:12px; }
+.xp-bar-track{
+  height:8px; border-radius:999px;
+  background: rgba(255,255,255,0.18);
+  overflow:hidden;
+}
+.xp-bar-fill{
+  height:100%; border-radius:999px;
+  background: linear-gradient(90deg, var(--c-gold), #F2C84B);
+  transition: width 0.5s cubic-bezier(.2,.8,.2,1);
+}
+.xp-label{ font-size:10.5px; opacity:0.85; margin-top:5px; font-weight:600; }
+
+/* ===== Home ===== */
+.home-body{ padding: 18px 16px 10px; }
+.section-label{
+  font-size:13px; font-weight:800; color: var(--c-text-soft);
+  text-transform:uppercase; letter-spacing:0.6px;
+  margin: 6px 2px 10px;
+}
+
+.mode-card{
+  background: var(--c-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 14px;
+  display:flex; align-items:center; gap:14px;
+  box-shadow: var(--c-shadow);
+  border: 1px solid var(--c-border);
+  position:relative;
+  animation: cardRise 0.4s cubic-bezier(.2,.8,.2,1) backwards;
+  transition: transform 0.12s ease;
+}
+.mode-card:active{ transform: scale(0.985); }
+.mode-card:nth-child(1){ animation-delay: 0.02s; }
+.mode-card:nth-child(2){ animation-delay: 0.08s; }
+.mode-card:nth-child(3){ animation-delay: 0.14s; }
+.mode-card:nth-child(4){ animation-delay: 0.20s; }
+@keyframes cardRise{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+.mode-icon{
+  width:54px; height:54px; flex-shrink:0;
+  border-radius: 15px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px;
+}
+.mode-info{ flex:1; min-width:0; }
+.mode-title{ font-size:16px; font-weight:800; margin-bottom:3px; display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
+.mode-desc{ font-size:12.5px; color: var(--c-text-soft); line-height:1.4; }
+.mode-arrow{ font-size:20px; color: var(--c-text-faint); flex-shrink:0; }
+
+.badge-quiz{ background: var(--c-primary-tint); color: var(--c-primary-dark); }
+.badge-role{ background: var(--c-blue-bg); color: var(--c-blue); }
+.badge-level{ background: var(--c-amber-bg); color: var(--c-amber); }
+.badge-endless{ background: linear-gradient(135deg,#2A1B40,#4B2A6E); color:#E8D9FF; }
+
+.diff-tag{
+  font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:6px;
+  text-transform:uppercase; letter-spacing:0.4px;
+}
+.diff-easy{ background:#E5F6ED; color:#1E8E5A;}
+.diff-med{ background:#FCEFDD; color:#C97A1F;}
+.diff-hard{ background:#FBE9E6; color:#C8432F;}
+.diff-infinite{ background: linear-gradient(135deg,#2A1B40,#6B3FA0); color:#fff;}
+
+.endless-card{
+  background: linear-gradient(135deg, #1B1330 0%, #3B2156 60%, #5A2D6E 100%);
+  border: 1px solid #4A2A66;
+}
+.endless-card .mode-title, .endless-card .mode-desc{ color:#F2E9FF; }
+.endless-card .mode-desc{ color:#C9B6E8; }
+.endless-card .mode-icon{ background: rgba(255,255,255,0.12); }
+
+.tip-banner{
+  margin: 4px 2px 16px;
+  background: var(--c-primary-tint);
+  border: 1px dashed var(--c-primary-light);
+  border-radius: var(--radius-md);
+  padding: 11px 13px;
+  font-size:12.5px;
+  color: var(--c-primary-dark);
+  line-height:1.5;
+}
+.tip-banner b{ color: var(--c-primary); }
+
+footer.app-footer{
+  text-align:center;
+  font-size:11px;
+  color: var(--c-text-faint);
+  padding: 10px 20px 4px;
+}
+
+/* ===== Compact header (non-home screens) ===== */
+.header-compact{ padding: 14px 14px 16px; border-radius: 0 0 20px 20px; }
+.header-compact .brand-mark{ flex:1; justify-content:center; }
+.quiz-progress-row, .rp-meta-row{
+  display:flex; align-items:center; gap:10px;
+  margin-top:12px;
+  font-size:12px; font-weight:700; opacity:0.92;
+}
+.mini-track{
+  flex:1; height:6px; border-radius:999px;
+  background: rgba(255,255,255,0.2); overflow:hidden;
+}
+.mini-fill{
+  height:100%; border-radius:999px;
+  background: var(--c-gold);
+  transition: width 0.35s ease;
+}
+.rp-meta-row{ justify-content:space-between; }
+
+.screen-body{ flex:1; padding: 18px 16px 8px; overflow-y:auto; }
+.screen-footer{ padding: 12px 16px 6px; }
+
+/* ===== Question card / options (shared: quiz, level, endless) ===== */
+.q-topic-tag{
+  display:inline-block;
+  background: var(--c-primary-tint); color: var(--c-primary-dark);
+  font-size:11.5px; font-weight:800; padding:4px 11px;
+  border-radius:999px; margin-bottom:12px;
+  text-transform:uppercase; letter-spacing:0.3px;
+}
+.diff-tag-row{ margin-bottom:10px; display:flex; gap:6px; flex-wrap:wrap; }
+
+.question-card{
+  background: var(--c-card);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px;
+  box-shadow: var(--c-shadow);
+  border: 1px solid var(--c-border);
+  margin-bottom: 16px;
+  animation: cardRise 0.3s cubic-bezier(.2,.8,.2,1);
+}
+.question-text{ font-size:17px; font-weight:700; line-height:1.5; }
+
+.options-list{ display:flex; flex-direction:column; gap:10px; }
+.option-btn{
+  text-align:left;
+  background: var(--c-card);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-size:14.5px; font-weight:600;
+  color: var(--c-text);
+  display:flex; align-items:center; gap:10px;
+  transition: all 0.15s ease;
+}
+.option-btn:active{ transform: scale(0.985); }
+.option-btn .opt-letter{
+  width:26px; height:26px; flex-shrink:0;
+  border-radius:50%;
+  background: var(--c-primary-tint); color: var(--c-primary-dark);
+  font-size:12.5px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+}
+.option-btn.is-correct{
+  background: var(--c-correct-bg); border-color: var(--c-correct); color: var(--c-correct);
+}
+.option-btn.is-correct .opt-letter{ background: var(--c-correct); color:#fff; }
+.option-btn.is-wrong{
+  background: var(--c-wrong-bg); border-color: var(--c-wrong); color: var(--c-wrong);
+}
+.option-btn.is-wrong .opt-letter{ background: var(--c-wrong); color:#fff; }
+.option-btn.is-disabled{ pointer-events:none; opacity:0.55; }
+.option-btn.is-disabled.is-correct, .option-btn.is-disabled.is-wrong{ opacity:1; }
+
+.explain-box{
+  margin-top:16px;
+  background: var(--c-amber-bg);
+  border: 1px solid #F0D5A8;
+  border-radius: var(--radius-md);
+  padding: 13px 15px;
+  animation: cardRise 0.3s cubic-bezier(.2,.8,.2,1);
+}
+.explain-label{ font-size:13px; font-weight:800; color: var(--c-amber); margin-bottom:4px; }
+.explain-text{ font-size:13.5px; line-height:1.5; color: var(--c-text); }
+.explain-box.correct-box{ background: var(--c-correct-bg); border-color:#B7E3C8; }
+.explain-box.correct-box .explain-label{ color: var(--c-correct); }
+
+/* ===== Roleplay chat ===== */
+.chat-body{
+  display:flex; flex-direction:column; gap:12px;
+  padding-bottom: 6px;
+}
+.chat-bubble-row{ display:flex; animation: cardRise 0.28s ease; }
+.chat-bubble-row.user{ justify-content:flex-end; }
+.chat-bubble-row.customer{ justify-content:flex-start; }
+.chat-bubble-row.feedback{ justify-content:center; }
+.chat-bubble{
+  max-width: 82%;
+  padding: 11px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height:1.5;
+}
+.chat-bubble.customer-bubble{
+  background: var(--c-blue-bg); color:#1A3A5C;
+  border-bottom-left-radius:4px;
+}
+.chat-bubble.user-bubble{
+  background: var(--c-primary); color:#fff;
+  border-bottom-right-radius:4px;
+}
+.chat-bubble.feedback-bubble{
+  background: var(--c-amber-bg); color:#7A4D12;
+  border: 1px dashed #E3B868;
+  font-size:13px; max-width:92%; text-align:center;
+  font-weight:600;
+}
+.chat-label{ font-size:10.5px; font-weight:700; opacity:0.65; margin-bottom:3px; text-transform:uppercase; letter-spacing:0.3px;}
+
+.bounce-dots{ display:flex; gap:5px; padding:10px 4px; }
+.bounce-dots span{
+  width:8px; height:8px; border-radius:50%;
+  background: var(--c-text-faint);
+  animation: bounceDot 1.2s infinite ease-in-out;
+}
+.bounce-dots span:nth-child(2){ animation-delay:0.15s; }
+.bounce-dots span:nth-child(3){ animation-delay:0.3s; }
+@keyframes bounceDot{
+  0%,80%,100%{ transform: scale(0.6); opacity:0.5; }
+  40%{ transform: scale(1); opacity:1; }
+}
+
+.chat-footer{ border-top:1px solid var(--c-border); background: var(--c-card); }
+.chat-input-row{ display:flex; gap:8px; align-items:center; }
+.chat-input-row input{
+  flex:1; padding:13px 15px; border-radius: var(--radius-md);
+  border:1.5px solid var(--c-border); font-size:14.5px;
+  background: var(--c-bg); color: var(--c-text);
+  font-family:inherit;
+}
+.chat-input-row input:focus{ border-color: var(--c-primary); outline:none; }
+.send-btn{
+  width:46px; height:46px; border-radius:50%;
+  background: var(--c-primary); color:#fff;
+  font-size:18px; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; box-shadow: 0 3px 10px rgba(15,110,86,0.32);
+}
+.send-btn:active{ transform: scale(0.93); }
+.send-btn:disabled{ opacity:0.5; }
+
+/* ===== Level map ===== */
+.level-card{
+  background: var(--c-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 13px;
+  display:flex; align-items:center; gap:13px;
+  box-shadow: var(--c-shadow);
+  border: 1px solid var(--c-border);
+  position:relative;
+  animation: cardRise 0.35s cubic-bezier(.2,.8,.2,1) backwards;
+}
+.level-card.locked{ opacity:0.55; }
+.level-card.unlocking{ animation: unlockPulse 0.6s ease; }
+@keyframes unlockPulse{
+  0%{ box-shadow: 0 0 0 0 rgba(212,160,23,0.6); }
+  70%{ box-shadow: 0 0 0 14px rgba(212,160,23,0); }
+}
+.level-num-badge{
+  width:46px; height:46px; flex-shrink:0; border-radius:13px;
+  background: var(--c-primary-tint); color: var(--c-primary-dark);
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+}
+.level-card.locked .level-num-badge{ background:#EEEFED; color: var(--c-text-faint); }
+.level-info{ flex:1; min-width:0; }
+.level-title{ font-size:15px; font-weight:800; margin-bottom:2px; }
+.level-desc{ font-size:11.5px; color: var(--c-text-soft); }
+.level-stars{ font-size:13px; margin-top:4px; letter-spacing:1px; }
+.lock-icon{ font-size:18px; color: var(--c-text-faint); }
+
+/* ===== Endless mode ===== */
+.endless-header{ background: linear-gradient(135deg,#241738,#3E2358); }
+.endless-stat-row{ display:flex; gap:8px; margin-top:13px; }
+.endless-stat{
+  flex:1; text-align:center; background: rgba(255,255,255,0.1);
+  border-radius:10px; padding:7px 4px;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+.endless-stat .v{ font-size:16px; font-weight:800; }
+.endless-stat .l{ font-size:8.5px; opacity:0.75; font-weight:700; letter-spacing:0.4px; }
+.endless-loading{ text-align:center; padding: 50px 10px; }
+.endless-loading-text{ font-size:13.5px; color: var(--c-text-soft); margin-top:8px; font-weight:600; }
+
+/* ===== Result screen ===== */
+.result-body{ align-items:center; text-align:center; padding-top:40px; }
+.result-emoji{ font-size:64px; margin-bottom:6px; animation: popIn 0.5s cubic-bezier(.2,.8,.2,1); }
+@keyframes popIn{ from{ transform: scale(0.5); opacity:0;} to{ transform: scale(1); opacity:1;} }
+.result-score-num{ font-size:48px; font-weight:800; color: var(--c-primary); line-height:1; }
+.result-score-label{ font-size:13px; color: var(--c-text-soft); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;}
+.result-stars{ font-size:30px; margin:16px 0; letter-spacing:4px; }
+.result-message{ font-size:17px; font-weight:800; margin-bottom:8px; }
+.result-detail{ font-size:13.5px; color: var(--c-text-soft); line-height:1.6; max-width:320px; }
+.result-footer{ padding: 12px 16px 6px; }
+
+/* toast */
+.toast{
+  position:fixed; bottom:18px; left:50%; transform: translateX(-50%);
+  background: var(--c-text); color:#fff; padding:10px 18px;
+  border-radius:999px; font-size:13px; font-weight:600;
+  z-index:999; opacity:0; transition: opacity 0.25s ease;
+  max-width:90%; text-align:center;
+}
+.toast.show{ opacity:1; }
+</style>
+</head>
+<body>
+
+  <script src="auth.js"></script>
+
+<div id="app">
+
+  <!-- ============ HOME SCREEN ============ -->
+  <div id="screen-home" class="screen">
+    <div class="top-header">
+      <div class="header-row">
+        <div class="brand-mark">
+          <div class="brand-logo">📱</div>
+          <div>
+            <div class="brand-name">Mobile Ustaad</div>
+            <div class="brand-tagline">Sahi phone. Sahi qeemat. Sahi banda.</div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-strip">
+        <div class="stat-chip">
+          <div class="v" id="home-total-score">0</div>
+          <div class="l">SCORE</div>
+        </div>
+        <div class="stat-chip">
+          <div class="v" id="home-player-level">1</div>
+          <div class="l">LEVEL</div>
+        </div>
+        <div class="stat-chip">
+          <div class="v" id="home-best-tier">0</div>
+          <div class="l">BEST TIER</div>
+        </div>
+      </div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="home-xp-fill" style="width:0%"></div></div>
+        <div class="xp-label" id="home-xp-label">0 / 50 XP tak agla level</div>
+      </div>
+    </div>
+
+    <div class="home-body">
+      <div class="section-label">Game Modes</div>
+
+      <button class="mode-card" id="card-quiz">
+        <div class="mode-icon badge-quiz">📝</div>
+        <div class="mode-info">
+          <div class="mode-title">Quiz Mode <span class="diff-tag diff-easy">10 Sawaal</span></div>
+          <div class="mode-desc">Random sawaalat — specs, tricks, pricing, sab kuch. Fast practice.</div>
+        </div>
+        <div class="mode-arrow">›</div>
+      </button>
+
+      <button class="mode-card" id="card-roleplay">
+        <div class="mode-icon badge-role">💬</div>
+        <div class="mode-info">
+          <div class="mode-title">Role-Play Mode <span class="diff-tag diff-med">AI Customer</span></div>
+          <div class="mode-desc">Asli customer jaisa AI se baat karo. Har jawab pe AI score deta hai.</div>
+        </div>
+        <div class="mode-arrow">›</div>
+      </button>
+
+      <button class="mode-card" id="card-levelup">
+        <div class="mode-icon badge-level">🏆</div>
+        <div class="mode-info">
+          <div class="mode-title">Level-Up Mode <span class="diff-tag diff-med">6 Layers</span></div>
+          <div class="mode-desc">Shuru se ustaad tak — brand se market domination tak, step by step.</div>
+        </div>
+        <div class="mode-arrow">›</div>
+      </button>
+
+      <button class="mode-card endless-card" id="card-endless">
+        <div class="mode-icon badge-endless">♾️</div>
+        <div class="mode-info">
+          <div class="mode-title">Endless Ustaad <span class="diff-tag diff-infinite">∞ Infinite</span></div>
+          <div class="mode-desc">Har sawaal AI banata hai, mushkil hamesha badhti hai. Ek ghalti = game over. Kahan tak jaa sakte ho?</div>
+        </div>
+        <div class="mode-arrow">›</div>
+      </button>
+
+      <div class="tip-banner">
+        💡 <b>Aaj ka tip:</b> <span id="daily-tip">IMEI check karne ke liye *#06# dial karo, phir box aur settings se match karo.</span>
+      </div>
+    </div>
+
+    <footer class="app-footer">Mobile Ustaad v1.0 — Millennium Mall Edition</footer>
+  </div>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <div id="screen-quiz" class="screen hidden">
+    <div class="top-header header-compact">
+      <div class="header-row">
+        <button class="back-btn" data-nav="home">‹</button>
+        <div class="brand-mark"><div class="brand-name" style="font-size:15px;">Quiz Mode</div></div>
+        <div style="width:36px;"></div>
+      </div>
+      <div class="quiz-progress-row">
+        <span id="quiz-counter">Q1/10</span>
+        <div class="mini-track"><div class="mini-fill" id="quiz-progress-fill" style="width:10%"></div></div>
+        <span id="quiz-score-live">0 pts</span>
+      </div>
+    </div>
+    <div class="screen-body">
+      <div class="q-topic-tag" id="quiz-topic-tag">Specs</div>
+      <div class="question-card">
+        <div class="question-text" id="quiz-question-text">Loading...</div>
+      </div>
+      <div class="options-list" id="quiz-options-list"></div>
+      <div class="explain-box hidden" id="quiz-explain-box">
+        <div class="explain-label" id="quiz-explain-label">Sahi Jawab!</div>
+        <div class="explain-text" id="quiz-explain-text"></div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <button class="btn btn-primary btn-block hidden" id="quiz-next-btn">Aagay Badho →</button>
+    </div>
+  </div>
+
+  <!-- ============ ROLEPLAY SCREEN ============ -->
+  <div id="screen-roleplay" class="screen hidden">
+    <div class="top-header header-compact">
+      <div class="header-row">
+        <button class="back-btn" data-nav="home">‹</button>
+        <div class="brand-mark"><div class="brand-name" style="font-size:15px;" id="rp-scenario-name">Role-Play</div></div>
+        <button class="back-btn" id="rp-new-customer-btn" title="New Customer">↻</button>
+      </div>
+      <div class="rp-meta-row">
+        <span id="rp-exchange-counter">Exchange 1/4</span>
+        <span id="rp-score-live">Avg score: —</span>
+      </div>
+    </div>
+    <div class="screen-body chat-body" id="rp-chat-body">
+      <!-- chat bubbles injected here -->
+    </div>
+    <div class="screen-footer chat-footer">
+      <div class="chat-input-row">
+        <input type="text" id="rp-input" placeholder="Apna jawab type karo..." autocomplete="off">
+        <button class="send-btn" id="rp-send-btn">➤</button>
+      </div>
+      <button class="btn btn-ghost btn-block hidden" id="rp-end-session-btn" style="margin-top:10px;">Session Khatam Karo — Result Dekho</button>
+    </div>
+  </div>
+
+  <!-- ============ LEVEL MAP SCREEN ============ -->
+  <div id="screen-levelmap" class="screen hidden">
+    <div class="top-header header-compact">
+      <div class="header-row">
+        <button class="back-btn" data-nav="home">‹</button>
+        <div class="brand-mark"><div class="brand-name" style="font-size:15px;">Level-Up Mode</div></div>
+        <div style="width:36px;"></div>
+      </div>
+    </div>
+    <div class="screen-body" id="levelmap-list">
+      <!-- level cards injected -->
+    </div>
+  </div>
+
+  <!-- ============ LEVEL PLAY SCREEN ============ -->
+  <div id="screen-levelplay" class="screen hidden">
+    <div class="top-header header-compact">
+      <div class="header-row">
+        <button class="back-btn" data-nav="levelmap">‹</button>
+        <div class="brand-mark"><div class="brand-name" style="font-size:15px;" id="lvl-name-header">Layer 1</div></div>
+        <div style="width:36px;"></div>
+      </div>
+      <div class="quiz-progress-row">
+        <span id="lvl-counter">Q1/5</span>
+        <div class="mini-track"><div class="mini-fill" id="lvl-progress-fill" style="width:20%"></div></div>
+        <span id="lvl-score-live">0 pts</span>
+      </div>
+    </div>
+    <div class="screen-body">
+      <div class="question-card">
+        <div class="question-text" id="lvl-question-text">Loading...</div>
+      </div>
+      <div class="options-list" id="lvl-options-list"></div>
+      <div class="explain-box hidden" id="lvl-explain-box">
+        <div class="explain-label" id="lvl-explain-label">Sahi Jawab!</div>
+        <div class="explain-text" id="lvl-explain-text"></div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <button class="btn btn-primary btn-block hidden" id="lvl-next-btn">Aagay Badho →</button>
+    </div>
+  </div>
+
+  <!-- ============ ENDLESS USTAAD SCREEN ============ -->
+  <div id="screen-endless" class="screen hidden">
+    <div class="top-header header-compact endless-header">
+      <div class="header-row">
+        <button class="back-btn" data-nav="home">‹</button>
+        <div class="brand-mark"><div class="brand-name" style="font-size:15px;">♾️ Endless Ustaad</div></div>
+        <div style="width:36px;"></div>
+      </div>
+      <div class="endless-stat-row">
+        <div class="endless-stat"><div class="v" id="endless-tier">1</div><div class="l">TIER</div></div>
+        <div class="endless-stat"><div class="v" id="endless-streak">0</div><div class="l">STREAK</div></div>
+        <div class="endless-stat"><div class="v" id="endless-score">0</div><div class="l">SCORE</div></div>
+        <div class="endless-stat"><div class="v" id="endless-best">0</div><div class="l">BEST</div></div>
+      </div>
+    </div>
+    <div class="screen-body" id="endless-body">
+      <div class="endless-loading" id="endless-loading">
+        <div class="bounce-dots"><span></span><span></span><span></span></div>
+        <div class="endless-loading-text" id="endless-loading-text">Ustaad mushkil sawaal soch raha hai...</div>
+      </div>
+      <div class="question-card hidden" id="endless-question-card">
+        <div class="diff-tag-row" id="endless-diff-label"></div>
+        <div class="question-text" id="endless-question-text"></div>
+      </div>
+      <div class="options-list" id="endless-options-list"></div>
+      <div class="explain-box hidden" id="endless-explain-box">
+        <div class="explain-label" id="endless-explain-label"></div>
+        <div class="explain-text" id="endless-explain-text"></div>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <button class="btn btn-primary btn-block hidden" id="endless-next-btn">Agla Sawaal →</button>
+    </div>
+  </div>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <div id="screen-result" class="screen hidden">
+    <div class="top-header header-compact">
+      <div class="header-row">
+        <button class="back-btn" data-nav="home">‹</button>
+        <div class="brand-mark"><div class="brand-name" style="font-size:15px;">Result</div></div>
+        <div style="width:36px;"></div>
+      </div>
+    </div>
+    <div class="screen-body result-body">
+      <div class="result-emoji" id="result-emoji">🏆</div>
+      <div class="result-score-num" id="result-score-num">0</div>
+      <div class="result-score-label" id="result-score-label">Points</div>
+      <div class="result-stars" id="result-stars"></div>
+      <div class="result-message" id="result-message">Waah! Bilkul sahi!</div>
+      <div class="result-detail" id="result-detail"></div>
+    </div>
+    <div class="screen-footer result-footer">
+      <button class="btn btn-primary btn-block" id="result-replay-btn">Dobara Khelo</button>
+      <button class="btn btn-ghost btn-block" data-nav="home" style="margin-top:10px;">Home Jao</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// MOBILE USTAAD — QUESTION BANK
+// id, topic, q, options[4], correctIndex, explain
+// ============================================================
+const QUESTION_BANK = [
+
+// ---------------- SPECS: RAM ----------------
+{id:1, topic:"specs", q:"Customer ke liye 2GB RAM wala phone kaisa hai?", options:["Bilkul theek hai, le lo","Avoid karo — aaj kal ke apps ke liye kaafi nahi","Sirf gaming ke liye sahi","Sirf calls ke liye best"], correct:1, explain:"2GB RAM aaj ke WhatsApp, Facebook jaise apps ke liye bhi tight hai. Phone hang karega. Hamesha avoid karo."},
+{id:2, topic:"specs", q:"4GB RAM wala phone customer ko de sakte hain?", options:["Bilkul nahi, reject karo","Haan, acceptable hai basic use ke liye","Sirf gamers ke liye best","Ye flagship level hai"], correct:1, explain:"4GB acceptable hai — WhatsApp, calls, basic browsing chal jata hai. Heavy gaming ya multitasking ke liye kaafi nahi."},
+{id:3, topic:"specs", q:"Konsi RAM 'recommend' category mein aati hai normal user ke liye?", options:["2GB","4GB","6GB","Koi bhi"], correct:2, explain:"6GB RAM recommend level hai — smooth multitasking, social media, light gaming sab comfortable chalta hai."},
+{id:4, topic:"specs", q:"8GB RAM kis category mein aata hai?", options:["Avoid","Acceptable","Recommend","Excellent"], correct:3, explain:"8GB excellent hai — heavy gaming, multitasking, future-proofing sab cover hota hai. Premium users ke liye perfect."},
+{id:5, topic:"specs", q:"Ek student bolta hai 'mujhe gaming phone chahiye 15k mein' — RAM kitni honi chahiye minimum?", options:["2GB", "4GB ya us se kam", "Kam az kam 6GB try karo", "16GB"], correct:2, explain:"15k budget mein bhi 6GB RAM wale options dhoondo — gaming smooth chalegi. 4GB mein lag hoga."},
+
+// ---------------- SPECS: STORAGE ----------------
+{id:6, topic:"specs", q:"32GB storage wala phone aaj kal kaisa hai?", options:["Best option","Avoid karo — fast full ho jata hai","Sirf business use ke liye","Gaming ke liye perfect"], correct:1, explain:"32GB mein apps, photos, updates ke baad space khatam ho jata hai. Avoid category mein hai."},
+{id:7, topic:"specs", q:"64GB storage customer ko offer kar sakte ho?", options:["Nahi, kabhi nahi","Haan acceptable hai light users ke liye","Sirf premium phones mein hota hai","64GB ka koi wajood nahi"], correct:1, explain:"64GB acceptable hai jo log heavy photos/videos nahi rakhte unke liye. Storage expandable ho to better."},
+{id:8, topic:"specs", q:"128GB storage ko kis category mein rakhte hain?", options:["Avoid","Acceptable","Recommend","Bekaar"], correct:2, explain:"128GB recommend level hai — aaj kal ka standard sweet spot, apps + photos + videos comfortably fit hote hain."},
+
+// ---------------- SPECS: PROCESSOR ----------------
+{id:9, topic:"specs", q:"20k se kam budget mein best processor kaunsa hai?", options:["Unisoc T606","Helio G99","Snapdragon 8 Gen 2","MediaTek Helio A22"], correct:1, explain:"Helio G99 20k ke under best processor hai — gaming aur daily use dono mein strong performance deta hai."},
+{id:10, topic:"specs", q:"Unisoc T606 processor ke baare mein advice kya hai?", options:["Highly recommend karo","Avoid karo — weak performance","Sirf flagship phones mein hota hai","Best gaming processor hai"], correct:1, explain:"Unisoc T606 weak processor hai, heavy apps aur gaming mein lag karta hai. Customer ko avoid karne ki advice do."},
+{id:11, topic:"specs", q:"Customer pooch raha hai processor kyun important hai — kya bataoge?", options:["Sirf design ke liye hota hai","Phone ki speed aur multitasking ki jaan hai","Battery se koi link nahi","Sirf camera control karta hai"], correct:1, explain:"Processor phone ka 'dimagh' hai — speed, gaming, multitasking sab isi pe depend karta hai."},
+
+// ---------------- SPECS: BATTERY ----------------
+{id:12, topic:"specs", q:"5000mAh battery normal use mein kitna chalti hai?", options:["2-3 ghante","Half din","1.5-2 din","1 hafta"], correct:2, explain:"5000mAh normal/moderate use mein 1.5 se 2 din tak comfortably chal jati hai."},
+{id:13, topic:"specs", q:"3000mAh battery wale phone ke baare mein kya advice doge?", options:["Best hai daily use ke liye","Avoid karo — jaldi khatam hogi","Gaming ke liye perfect hai","Koi farq nahi padta"], correct:1, explain:"3000mAh aaj kal ke screen aur apps ke saath jaldi khatam ho jati hai. Avoid karne ki advice do, especially heavy users ko."},
+{id:14, topic:"specs", q:"Customer bolta hai 'mera phone jaldi battery khatam karta hai' — pehla check kya karoge?", options:["Naya phone le lo seedha","Background apps aur screen brightness check karo","SIM change kar do","Phone wapis dukaan walay ko de do"], correct:1, explain:"Pehle background apps, brightness, aur battery-heavy apps check karo — zyada tar isi se masla solve hota hai."},
+
+// ---------------- SPECS: SCREEN ----------------
+{id:15, topic:"specs", q:"AMOLED aur LCD screen mein kaunsi behtar hai?", options:["LCD hamesha behtar","AMOLED behtar — deep colors aur better contrast","Dono same hain","Koi farq nahi"], correct:1, explain:"AMOLED LCD se behtar hai — deep blacks, vibrant colors, aur battery saving (dark mode mein) bhi deta hai."},
+{id:16, topic:"specs", q:"90Hz ya 120Hz refresh rate ka kya fayda hai?", options:["Camera better hoti hai","Battery zyada chalti hai","Scrolling aur animations smooth hoti hain","Storage badh jata hai"], correct:2, explain:"Higher refresh rate (90Hz/120Hz) scrolling, gaming, aur animations ko bohat smooth bana deta hai."},
+
+// ---------------- FAKE DETECTION ----------------
+{id:17, topic:"tricks", q:"IMEI check karne ka sahi tareeqa kya hai?", options:["*#06# dial karo phir box se match karo","Phone ka weight check karo","Sirf box dekho, phone na dekho","Camera se photo le lo"], correct:0, explain:"*#06# dial karo — screen pe IMEI aayega, usay box pe likhe IMEI aur Settings > About se match karo. Teeno same hone chahiye."},
+{id:18, topic:"tricks", q:"Original phone ka seal kaisa hota hai?", options:["Air bubbles ke saath","Bilkul flat, no air bubbles","Colorful sticker wala","Hamesha tota hua"], correct:1, explain:"Original seal flat hota hai, koi air bubble nahi hota. Bubbles ya uneven seal fake/repacked hone ka sign hai."},
+{id:19, topic:"tricks", q:"SIM tray ke paas water damage indicator pink/red ho to?", options:["Phone bilkul theek hai","Reject karo — water damage ho chuka hai","Sirf warranty khatam hui hai","Yeh normal color hai"], correct:1, explain:"Pink/red indicator water damage confirm karta hai. White/safe color hi acceptable hai — pink dekhte hi reject karo."},
+{id:20, topic:"tricks", q:"Display model (showroom dummy) phone ki nishani kya hai?", options:["Battery hamesha full rehti hai","Battery hamesha low rehti hai ya drain hoti rehti hai","Camera kaam nahi karti","Phone bilkul naya lagta hai"], correct:1, explain:"Display models showroom mein continuously on rehte hain, isliye battery health weak aur charge fast drain hoti hai."},
+{id:21, topic:"tricks", q:"Clone phone ki sabse badi nishani kya hai?", options:["IMEI missing ya mismatch hota hai","Phone bohat heavy hota hai","Screen bohat bright hoti hai","Box bohat colorful hota hai"], correct:0, explain:"Clone phones mein IMEI register nahi hota ya box/phone/settings mein mismatch milta hai — yeh sabse reliable check hai."},
+{id:22, topic:"tricks", q:"Dukaandaar bolta hai 'yeh seal pack hai bhai, trust karo' lekin seal mein bubble hai — kya karoge?", options:["Trust kar lo, sab theek hai","Seal ko ignore karke phone test karo","Suspicious raho, IMEI aur full check karo","Phone fauran le lo discount ke chakkar mein"], correct:2, explain:"Bubble wala seal red flag hai. Trust se kaam nahi chalta — IMEI check, seal inspection, aur full physical check zaroor karo."},
+{id:23, topic:"tricks", q:"Refurbished phone ko 'box-pack new' bata kar becha ja raha ho to pehchaan kaise hogi?", options:["Box ka design dekho","IMEI registration date aur scratches/screen wear check karo","Sirf price se pata chalta hai","Pehchaan mumkin nahi"], correct:1, explain:"Refurbished phones mein screen pe halki scratches, IMEI ki activation date purani, aur accessories mismatch milte hain."},
+{id:24, topic:"tricks", q:"2nd hand phone lete waqt sabse pehla check kya hona chahiye?", options:["Color pasand hai ya nahi","IMEI verify karo PTA DIRBS se","Seller ka naam pooch lo","Bargaining shuru kar do"], correct:1, explain:"Sabse pehla step hamesha IMEI ko PTA DIRBS (8484) se verify karna hai — yeh confirm karta hai phone PTA approved hai ya nahi."},
+
+// ---------------- 2ND HAND CHECKLIST ----------------
+{id:25, topic:"inspection", q:"2nd hand phone check karte waqt body pe kya dekhna chahiye?", options:["Sirf color", "Dents, scratches, aur frame alignment", "Sirf weight", "Box ka design"], correct:1, explain:"Body pe dents, deep scratches, aur frame ka misalignment phone ke drop/damage history ko reveal karte hain."},
+{id:26, topic:"inspection", q:"Touch screen test karne ka sahi tareeqa?", options:["Sirf dekh lo, touch na karo","Har corner pe finger se draw test karo (grid app)","Phone ko shake karo","Camera se photo lo"], correct:1, explain:"Ek drawing/grid testing app use karke screen ke har corner pe touch test karo — dead zones ka pata chal jata hega."},
+{id:27, topic:"inspection", q:"Camera check karte waqt kya dekhna zaroori hai?", options:["Sirf front camera", "Front aur back dono, focus aur clarity", "Sirf flash kaam karta hai ya nahi", "Camera app ka icon"], correct:1, explain:"Front aur back camera dono test karo — clarity, focus speed, aur kisi spot/blur ka hona check karo."},
+{id:28, topic:"inspection", q:"Charging port check karne ka best tareeqa?", options:["Sirf dekh lo port mein dust hai ya nahi","Original cable se charge laga kar test karo","Port ko ungli se ghuma do","Yeh check zaroori nahi"], correct:1, explain:"Original ya quality cable se actually charge lagao — loose connection ya slow charging ka pata turant chal jata hai."},
+{id:29, topic:"inspection", q:"Speaker aur mic test kaise karte hain?", options:["Sirf volume button dabao","Call kar ke ya voice recorder se test karo","Speaker ko khol kar dekho","Yeh test possible nahi hai"], correct:1, explain:"Ek test call karo ya voice recorder chalao — speaker ki clarity aur mic ki sensitivity dono check ho jate hain."},
+{id:30, topic:"inspection", q:"Sensors (proximity, fingerprint) test karna kyun zaroori hai?", options:["Zaroori nahi hai","Call ke waqt aur unlock ke waqt problem se bachne ke liye","Sirf design feature hai","Battery se related hai"], correct:1, explain:"Proximity sensor fail ho to call ke waqt screen on reh jati hai. Fingerprint slow ho to daily use mein irritation hoti hai."},
+
+// ---------------- SOFTWARE ----------------
+{id:31, topic:"software", q:"FRP lock kya hota hai?", options:["Phone ka color lock","Factory reset ke baad Google account security check","Sim lock","Battery lock"], correct:1, explain:"FRP (Factory Reset Protection) factory reset ke baad purana Google account maangta hai — security feature hai theft se bachne ke liye."},
+{id:32, topic:"software", q:"iCloud locked phone ka best fix kya hai?", options:["Phone tod dalo","Original owner se sign out karwao","Flashing kar do seedha","Kuch nahi ho sakta"], correct:1, explain:"Best aur sahi tareeqa yeh hai ke original owner se request karo apna iCloud account sign out karne ke liye."},
+{id:33, topic:"software", q:"Phone slow ho gaya hai — sabse pehla kya try karna chahiye?", options:["Clear data kar do sab apps ka","Clear cache karo, data clear na karo","Phone reset kar do seedha","Naya phone le lo"], correct:1, explain:"Clear CACHE karo, clear DATA nahi — cache clear karne se app ka saved login/settings nahi jata, sirf junk files clear hoti hain."},
+{id:34, topic:"software", q:"Developer Options enable karne ka tareeqa kya hai?", options:["Settings mein 'Developer' likh kar search karo","Build Number ko 7 baar tap karo","Phone restart karo 7 baar","SIM nikal kar wapis dalo"], correct:1, explain:"Settings > About Phone mein 'Build Number' ko 7 baar tap karo — Developer Options unlock ho jate hain."},
+{id:35, topic:"software", q:"Phone ki animation slow lag rahi hai to kya setting change karoge?", options:["Brightness kam karo","Animation scale 0.5x kar do Developer Options mein","Wallpaper change karo","Ringtone change karo"], correct:1, explain:"Developer Options mein Animation Scale ko 0.5x kar dene se phone fast aur snappy feel hota hai."},
+{id:36, topic:"software", q:"Data recovery ke liye sabse zaroori cheez kya hai?", options:["Phone ko zyada use karte raho","Immediate action lo, overwrite hone se pehle","1 mahina wait karo","Phone bech do"], correct:1, explain:"Deleted data tab tak recoverable hota hai jab tak naya data us space ko overwrite na kare. Jitni jaldi action lo, chances zyada hote hain."},
+
+// ---------------- PRICING & DEPRECIATION ----------------
+{id:37, topic:"pricing", q:"0-6 mahine purane phone ki depreciation kitni hoti hai (original price ka kitna %)?", options:["35%","50%","65%","80%"], correct:3, explain:"0-6 mahine purane phone ki value original price ka 80% tak hoti hai — bohat halki depreciation."},
+{id:38, topic:"pricing", q:"1-2 saal purane phone ki value original ka kitna % rehti hai?", options:["80%","65%","50%","35%"], correct:2, explain:"1-2 saal purane phone ki value original price ka 50% reh jati hai."},
+{id:39, topic:"pricing", q:"2 saal se zyada purane phone ki depreciation kitni ho jati hai?", options:["50%","65%","35% ya kam","80%"], correct:2, explain:"2 saal se zyada purane phones ki value 35% ya us se bhi kam reh jati hai, model aur condition pe depend karta hai."},
+{id:40, topic:"pricing", q:"Handsfree jiski cost 70 PKR hai, usay kitne mein bechna chahiye normal profit margin ke liye?", options:["100 PKR","150 PKR","350 PKR (5x margin)","70 PKR (no profit)"], correct:2, explain:"Accessories pe typically 5x margin lagta hai — 70 PKR ki cheez 350 PKR mein bikti hai, yeh standard market practice hai."},
+{id:41, topic:"pricing", q:"Flagship phones ki price kitni baar check karni chahiye?", options:["Mahine mein ek baar","Daily check karo — yeh fast fluctuate hoti hai","Kabhi check na karo","Saal mein ek baar"], correct:1, explain:"Flagship phones ki price daily fluctuate hoti hai (dollar rate, demand se), isliye daily check zaroori hai."},
+{id:42, topic:"pricing", q:"Stable/normal phones ki price check karne ka tareeqa?", options:["Daily check zaroori hai","Weekly check kaafi hai","Kabhi check na karo","Ghante ghante check karo"], correct:1, explain:"Stable phones (jo zyada fluctuate nahi karte) ke liye weekly price check kaafi hota hai."},
+
+// ---------------- CUSTOMER DEALING ----------------
+{id:43, topic:"customer", q:"Customer trust build karne ke liye opening line kya honi chahiye?", options:["'Aap bohat lucky hain aaj'","'Main shopkeeper nahi hoon, commission nahi milti'","'Yeh phone sabse mehnga hai'","'Jaldi decide karo, time nahi hai'"], correct:1, explain:"Yeh line customer ko reassure karti hai ke aap unka faida soch rahe hain, sales pressure nahi de rahe."},
+{id:44, topic:"customer", q:"Customer apna budget seedha nahi bata raha — kya approach lo?", options:["Force karo budget batane ke liye","'2-3 options dikhata hoon alag range mein' bolo","Sabse mehnga phone dikhao","Customer ko chhod do"], correct:1, explain:"Indirect approach se customer comfortable feel karta hai — alag price ranges dikhane se woh khud apni range select kar leta hai."},
+{id:45, topic:"customer", q:"Apni value customer ko kaise samjhao fee/commission se pehle?", options:["'Mujhe commission do pehle'","'Main aapke X rupay bachaunga' bolo","Kuch na bolo","Seedha price bata do"], correct:1, explain:"Pehle value dikhao — 'main aapke paise bachaunga' — phir customer trust karta hai aur advice leta hai."},
+{id:46, topic:"customer", q:"Price quote karte waqt kaunsa disclaimer dena chahiye?", options:["Kuch nahi, price final hai","'Yeh aaj ki price hai — kal confirm karo'","'Yeh lifetime price hai'","Disclaimer ki zaroorat nahi"], correct:1, explain:"Mobile market mein prices roz change hoti hain, isliye disclaimer dena professional aur honest dikhata hai."},
+{id:47, topic:"customer", q:"Sale ke baad relationship build karne ka tareeqa?", options:["Customer ko bhool jao","'Mera number save kar lena, WhatsApp karna' bolo","Sirf paisay le kar chale jao","Customer se dobara baat na karo"], correct:1, explain:"After-sale connection future referrals aur repeat business laata hai — yeh long-term trust banata hai."},
+{id:48, topic:"customer", q:"Suspicious customer pooch rahay hain 'aapko commission milti hai is phone pe?' — kya jawab doge?", options:["Jhoot bol do 'nahi milti'","Honestly batao ke advisory fee hai, commission nahi, aur unka faida priority hai","Bahas karo customer se","Customer ko phone na dikhao"], correct:1, explain:"Honesty se trust banta hai. Transparent raho ke aapka kaam unhe sahi advice dena hai, hidden commission nahi."},
+
+// ---------------- PTA / OFFICIAL ----------------
+{id:49, topic:"pta", q:"PTA DIRBS verification ke liye IMEI kahan send karte hain?", options:["111","786","8484","1122"], correct:2, explain:"IMEI number ko 8484 par SMS karo — PTA DIRBS system verify kar ke reply karta hai ke phone registered hai ya nahi."},
+{id:50, topic:"pta", q:"PTA DIRBS ki official website kya hai?", options:["pta.gov.pk/dirbs","dirbs.pta.gov.pk","www.dirbs.com","phone.pta.gov.pk"], correct:1, explain:"dirbs.pta.gov.pk official PTA DIRBS website hai jahan IMEI online bhi check kar sakte hain."},
+{id:51, topic:"pta", q:"Customer ka phone PTA mein 'non-compliant' show ho raha hai, matlab?", options:["Phone bilkul theek hai","Phone tax/registration ke baghair hai — network issue ho sakta hai","Phone naya hai","Kuch farq nahi padta"], correct:1, explain:"Non-compliant phones future mein PTA tax/registration ke bina network block ho sakte hain — customer ko zaroor batao."},
+
+// ---------------- BRANDS ----------------
+{id:52, topic:"brands", q:"Tecno ka kaunsa series gaming ke liye famous hai?", options:["Spark","Camon","Pova","Phantom"], correct:2, explain:"Tecno Pova series gaming-focused hai — battery aur processor gaming ke hisaab se strong hote hain."},
+{id:53, topic:"brands", q:"Infinix ka student favorite series kaunsa hai?", options:["Smart","Hot","Zero","GT"], correct:1, explain:"Infinix Hot series students mein bohat popular hai — balanced specs aur affordable price ki wajah se."},
+{id:54, topic:"brands", q:"Samsung ka student-friendly series kaunsa hai?", options:["A37/A57","A16/A17","A06/A05","Z series"], correct:2, explain:"Samsung A06/A05 series students/budget buyers ke liye hai — basic use ke liye reliable Samsung quality."},
+{id:55, topic:"brands", q:"Vivo ka camera/flagship-focused series kaunsa hai?", options:["Y series","V series","X series","T series"], correct:2, explain:"Vivo X series flagship aur camera-centric hai, premium photography users ke liye."},
+{id:56, topic:"brands", q:"Realme ka gaming-premium series kaunsa hai?", options:["C series","Narzo","GT","Note"], correct:2, explain:"Realme GT series premium gaming ke liye hai — strong processor aur high refresh rate screens."},
+{id:57, topic:"brands", q:"Oppo ka camera/selfie-focused series kaunsa hai?", options:["A series","F series","Reno","Find"], correct:1, explain:"Oppo F series selfie aur camera quality ke liye famous hai, young buyers mein popular."},
+{id:58, topic:"brands", q:"Poco ka flagship gaming series kaunsa hai?", options:["M series","X series","F series","C series"], correct:2, explain:"Poco F series unka flagship gaming line hai — strong processors, high refresh rate."},
+{id:59, topic:"brands", q:"Motorola ka foldable phone series kaunsa hai?", options:["E series","G series","Edge","Razr"], correct:3, explain:"Motorola Razr unka foldable flagship series hai — premium aur unique form factor."},
+];
+
+// Topic display names (Roman Urdu/English mix)
+const TOPIC_NAMES = {
+  specs: "Phone Specs",
+  tricks: "Tricks & Fake Detection",
+  inspection: "2nd Hand Inspection",
+  software: "Software & Fixes",
+  pricing: "Pricing & Depreciation",
+  customer: "Customer Dealing",
+  pta: "PTA / Official",
+  brands: "Brands & Identity"
+};
+// ============================================================
+// MOBILE USTAAD — LEVEL-UP MODE DATA (6 Layers)
+// ============================================================
+const LEVELS = [
+{
+  id:1, name:"Brand & Identity", icon:"🎯",
+  desc:"Mission, promise, aur trust ki bunyaad",
+  questions:[
+    {q:"Mobile Ustaad ka core mission kya hai?", options:["Sirf phone bechna","Sahi advice de kar customer ka faida karna","Sirf commission kamana","Sasta phone dhoondna"], correct:1, explain:"Mobile Ustaad ka mission hai customer ko sahi, honest advice dena — sirf sale nahi, trust banana."},
+    {q:"Advisor aur shopkeeper mein basic farq kya hai?", options:["Koi farq nahi","Advisor commission-free honest advice deta hai, shopkeeper sale-focused hota hai","Advisor sasta becha hai","Shopkeeper zyada honest hota hai"], correct:1, explain:"Advisor ka focus customer ka faida hai, shopkeeper ka focus zyada sale karna hota hai — yeh identity ka farq hai."},
+    {q:"Trust banane ka sabse pehla qadam kya hai?", options:["Mehnga phone dikhana","Honest aur transparent baat karna","Jaldi sale close karna","Customer ko ignore karna"], correct:1, explain:"Honesty aur transparency trust ki bunyaad hai — yehi long-term relationship banata hai."},
+    {q:"'Sahi phone, sahi qeemat, sahi banda' tagline ka matlab kya hai?", options:["Sirf phone sell karna","Customer ko sahi product, sahi price, aur sahi (honest) insaan se milana","Koi specific matlab nahi","Sirf marketing line hai"], correct:1, explain:"Yeh teen pillars hain: right product, fair price, trustworthy person — yehi Mobile Ustaad ki identity hai."},
+    {q:"Brand promise ko daily kaam mein kaise follow karna chahiye?", options:["Sirf bolne ke liye, kaam mein nahi","Har customer ke saath honest advice aur fair dealing se","Sirf bade customers ke saath","Promise follow karna zaroori nahi"], correct:1, explain:"Brand promise sirf words nahi, har interaction mein follow honi chahiye — chhota ya bada customer, treatment same."}
+  ]
+},
+{
+  id:2, name:"Customer Advisory", icon:"🗣️",
+  desc:"Script, insecurity handling, aur dealing ke tareeqe",
+  questions:[
+    {q:"Customer insecure hai apna budget batane mein — kya karoge?", options:["Force karo batane ke liye","Indirect tareeqe se alag range ke options dikhao","Customer ko chhod do","Sabse mehnga dikhao"], correct:1, explain:"Indirect approach se customer comfortable hota hai aur khud apni range select karta hai."},
+    {q:"Opening line jo trust build kare?", options:["'Yeh sabse mehnga hai, le lo'","'Main shopkeeper nahi, commission nahi milti'","'Jaldi karo time nahi hai'","'Aap expert nahi ho phones mein'"], correct:1, explain:"Yeh line customer ko reassure karti hai ke unka faida priority hai."},
+    {q:"Customer pooch raha hai commission ke baare mein — sahi response?", options:["Jhoot bolo","Honest raho — advisory ka maqsad samjhao","Bahas karo","Ignore karo"], correct:1, explain:"Honesty se hi long-term trust banta hai, jhoot pakda jaye to relationship khatam ho jati hai."},
+    {q:"Price disclaimer dena kyun zaroori hai?", options:["Zaroori nahi hai","Market prices roz change hoti hain, customer ko inform karna chahiye","Sirf rule follow karne ke liye","Customer confuse karne ke liye"], correct:1, explain:"'Aaj ki price hai, kal confirm karo' — yeh transparency dikhata hai aur future complaints se bachata hai."},
+    {q:"Sale ke baad customer se connection kaise banayein?", options:["Connection ki zaroorat nahi","Number diya jaye WhatsApp follow-up ke liye","Customer ko bhool jao","Sirf paisay lo"], correct:1, explain:"After-sale connection trust ko long-term banata hai aur future referrals laata hai."}
+  ]
+},
+{
+  id:3, name:"Phone Specs", icon:"⚙️",
+  desc:"RAM, storage, processor, battery, screen, camera",
+  questions:[
+    {q:"6GB RAM kis category mein aata hai?", options:["Avoid","Acceptable","Recommend","Excellent"], correct:2, explain:"6GB RAM recommend category mein hai — smooth daily use aur light gaming."},
+    {q:"128GB storage ka status kya hai?", options:["Avoid","Acceptable","Recommend","Bekaar"], correct:2, explain:"128GB recommend hai — aaj ke standard use ke liye sweet spot."},
+    {q:"5000mAh battery normal use mein kitna chalti hai?", options:["1 din se kam","1.5-2 din","1 hafta","Sirf 5 ghante"], correct:1, explain:"5000mAh moderate use mein 1.5-2 din comfortably chal jati hai."},
+    {q:"AMOLED screen LCD se behtar kyun hai?", options:["Sasti hai","Deep blacks, better contrast, battery saving","Heavy hoti hai","Koi farq nahi"], correct:1, explain:"AMOLED deep colors aur better contrast deta hai, dark mode mein battery bhi bachati hai."},
+    {q:"Helio G99 kis budget range mein best processor hai?", options:["50k+","20k se kam","Sirf flagship","Koi range nahi"], correct:1, explain:"Helio G99 20k se kam budget mein gaming aur daily use ke liye best processor option hai."}
+  ]
+},
+{
+  id:4, name:"Tricks & Inspection", icon:"🔍",
+  desc:"10 fake detection methods aur 2nd hand checklist",
+  questions:[
+    {q:"IMEI verify karne ka process kya hai?", options:["*#06# dial karo, box/phone/settings match karo","Sirf box dekho","Weight check karo","Color check karo"], correct:0, explain:"*#06# dial karke screen ka IMEI, box ka IMEI, aur Settings ka IMEI — teeno match hone chahiye."},
+    {q:"Water damage indicator pink/red ho to?", options:["Phone theek hai","Reject karo","Warranty claim karo","Ignore karo"], correct:1, explain:"Pink/red indicator water damage confirm karta hai — phone reject kar dena chahiye."},
+    {q:"Display model ki nishani kya hai?", options:["Battery hamesha low/drain","Camera kharab","Phone bohat naya lagta hai","Box colorful hota hai"], correct:0, explain:"Showroom display models continuously on rehte hain, isliye battery health weak hoti hai."},
+    {q:"Original seal kaisa hota hai?", options:["Bubbles ke saath","Flat, no air bubbles","Colorful","Tota hua"], correct:1, explain:"Original seal flat hota hai bina kisi air bubble ke."},
+    {q:"2nd hand phone ka sabse pehla check kya hai?", options:["Color","PTA DIRBS se IMEI verify","Seller ka naam","Bargaining"], correct:1, explain:"Sabse pehla step PTA DIRBS se IMEI verify karna hai — confirm karo phone registered hai."}
+  ]
+},
+{
+  id:5, name:"Software Services", icon:"💻",
+  desc:"FRP, iCloud, flashing, aur data recovery",
+  questions:[
+    {q:"FRP lock kya hota hai?", options:["Color lock","Factory reset ke baad Google account security","SIM lock","Network lock"], correct:1, explain:"FRP factory reset ke baad purana Google account maangta hai — anti-theft feature."},
+    {q:"iCloud locked phone ka best fix?", options:["Tod dalo","Original owner se sign out karwao","Flash kar do","Kuch nahi ho sakta"], correct:1, explain:"Best tareeqa original owner se iCloud sign out karwana hai."},
+    {q:"Phone slow ho to pehla step?", options:["Clear data","Clear cache","Phone reset","Naya phone lo"], correct:1, explain:"Clear cache karo, data clear mat karo — login/settings save rehte hain."},
+    {q:"Developer Options unlock karne ka tareeqa?", options:["Settings search","Build Number 7 baar tap","Phone restart 7 baar","SIM nikalo"], correct:1, explain:"Build Number ko 7 baar tap karne se Developer Options unlock hote hain."},
+    {q:"Data recovery ke liye sabse zaroori cheez?", options:["Wait karo","Immediate action overwrite se pehle","Phone bech do","Kuch zaroori nahi"], correct:1, explain:"Deleted data overwrite hone se pehle hi recover karna chahiye, warna chances kam ho jate hain."}
+  ]
+},
+{
+  id:6, name:"Market Domination", icon:"👑",
+  desc:"Business system, pricing strategy, aur growth",
+  questions:[
+    {q:"0-6 mahine purane phone ki depreciation kitni hai?", options:["35%","50%","65%","80% value bachti hai"], correct:3, explain:"0-6 mahine mein phone apni 80% value retain karta hai."},
+    {q:"Accessories pe standard profit margin kitna hota hai?", options:["1x","2x","5x","10x"], correct:2, explain:"Accessories (handsfree, cover etc) pe typically 5x margin lagta hai."},
+    {q:"Flagship phones ki price check frequency?", options:["Daily","Weekly","Monthly","Kabhi nahi"], correct:0, explain:"Flagship phones ki price fast fluctuate hoti hai, daily check zaroori hai."},
+    {q:"Business growth ke liye sabse important asset kya hai?", options:["Sasta phone","Customer trust aur repeat business","Bara dukaan","Zyada staff"], correct:1, explain:"Trust aur repeat customers hi long-term business growth ki bunyaad hain."},
+    {q:"Market domination ka matlab Mobile Ustaad ke context mein?", options:["Sabse zyada phone bechna kisi tareeqe se","Itni trust aur knowledge ke saath ke log khud aapke paas aayen","Competitors ko harm pohanchana","Sirf prices kam rakhna"], correct:1, explain:"Real domination woh hai jahan customers khud trust ki wajah se wapis aate hain — sustainable growth model."}
+  ]
+}
+];
+// ============================================================
+// MOBILE USTAAD — ROLE-PLAY MODE SCENARIOS
+// ============================================================
+const ROLEPLAY_SCENARIOS = [
+{
+  id:"student",
+  name:"Confused Student",
+  icon:"🎓",
+  intro:"Ek student gaming phone dhoond raha hai, budget tight hai aur insecure hai.",
+  systemContext:"Tu ek confused student hai, umar 19-20 saal, jo Karachi ke Millennium Mall mein gaming phone khareedne aaya hai. Tera budget sirf 15000 PKR hai aur tu thoda insecure hai is kam budget ke baare mein — tujhe lagta hai shopkeeper tujhe judge karega. Tu chahta hai PUBG/Free Fire smooth chale. Tu pehle apna budget seedha nahi batayega, ghuma phira kar baat karega."
+},
+{
+  id:"suspicious",
+  name:"Suspicious Customer",
+  icon:"🤨",
+  intro:"Yeh customer sochta hai advisor ko commission milti hai aur honesty test kar raha hai.",
+  systemContext:"Tu ek suspicious customer hai jo sochta hai mobile advisors shopkeepers se commission lete hain aur isliye expensive phones push karte hain. Tu Millennium Mall mein phone dekhne aaya hai lekin advisor ki advice pe trust nahi karta. Tu directly pooch sakta hai 'aapko commission milti hai is phone pe?' ya 'aap mujhe sasta wala kyun nahi dikha rahe?'. Tu advisor ki honesty test kar raha hai."
+},
+{
+  id:"family",
+  name:"Family Buyer",
+  icon:"👨‍👩‍👧",
+  intro:"Apne buzurg walid/walida ke liye simple phone dhoond rahe hain, features se confused hain.",
+  systemContext:"Tu apne buzurg waalid (ya waalida) ke liye simple phone khareedne aaya hai. Tujhe technical features samajh nahi aate — RAM, processor jaise lafz tujhe confuse karte hain. Tu chahta hai bas ek simple phone jo calls, WhatsApp, aur thoda sa camera use ho sake, bina lag kiye. Tu basic Urdu mein baat karega aur thoda confused/unsure tone mein."
+},
+{
+  id:"secondhand",
+  name:"2nd Hand Skeptic",
+  icon:"📦",
+  intro:"Used phone dekhne aaya hai, dara hua hai ke refurbished phone naya bata kar na bech diya jaye.",
+  systemContext:"Tu second-hand phone khareedne aaya hai lekin tujhe dar hai ke koi refurbished phone tujhe 'bilkul naya' bata kar na bech de. Tu suspicious hai aur baar baar pooch raha hai ke phone genuine hai ya nahi, IMEI check karna chahta hai, aur warranty ke baare mein bhi pooch raha hai."
+},
+{
+  id:"techproblem",
+  name:"Slow Phone, Scared",
+  icon:"🐢",
+  intro:"Phone bohat slow ho gaya hai lekin factory reset se darr raha hai data khone ka.",
+  systemContext:"Tera phone bohat slow ho gaya hai aur hang karta hai. Logon ne tujhe factory reset karne ko kaha hai lekin tu darr raha hai ke tera data (photos, contacts, WhatsApp chats) delete ho jayega. Tu safe solution dhoond raha hai jisme data na jaye. Tu worried tone mein baat karega."
+}
+];
+
+
+// ============================================================
+// MOBILE USTAAD — APP ENGINE
+// ============================================================
+
+// ---------- STATE & STORAGE ----------
+const STORAGE_KEY = "mobileUstaad_v1";
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  }catch(e){
+    return defaultState();
+  }
+}
+
+function defaultState(){
+  return {
+    totalScore: 0,
+    playerLevel: 1,
+    levelStars: [0,0,0,0,0,0],      // stars per layer (index 0 = Layer 1)
+    unlockedLevels: [true,false,false,false,false,false],
+    endlessBestTier: 0,
+    endlessBestScore: 0
+  };
+}
+
+let STATE = loadState();
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  }catch(e){ /* storage unavailable — fail silently, game still playable this session */ }
+}
+
+function addScore(points){
+  STATE.totalScore += points;
+  STATE.playerLevel = Math.max(1, Math.floor(STATE.totalScore / 50) + 1);
+  saveState();
+  refreshHomeStats();
+}
+
+// ---------- NAVIGATION ----------
+const SCREEN_IDS = ["home","quiz","roleplay","levelmap","levelplay","endless","result"];
+
+function showScreen(name){
+  SCREEN_IDS.forEach(id=>{
+    const el = document.getElementById("screen-"+id);
+    if(!el) return;
+    if(id === name){ el.classList.remove("hidden"); }
+    else{ el.classList.add("hidden"); }
+  });
+  if(name === "home"){ refreshHomeStats(); }
+  window.scrollTo(0,0);
+}
+
+document.addEventListener("click", function(e){
+  const navBtn = e.target.closest("[data-nav]");
+  if(navBtn){
+    showScreen(navBtn.getAttribute("data-nav"));
+  }
+});
+
+// ---------- TOAST ----------
+let toastTimer = null;
+function showToast(msg){
+  let t = document.getElementById("global-toast");
+  if(!t){
+    t = document.createElement("div");
+    t.id = "global-toast";
+    t.className = "toast";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove("show"), 2400);
+}
+
+// ---------- HOME STATS ----------
+function refreshHomeStats(){
+  document.getElementById("home-total-score").textContent = STATE.totalScore;
+  document.getElementById("home-player-level").textContent = STATE.playerLevel;
+  document.getElementById("home-best-tier").textContent = STATE.endlessBestTier;
+  const xpIntoLevel = STATE.totalScore % 50;
+  document.getElementById("home-xp-fill").style.width = (xpIntoLevel/50*100)+"%";
+  document.getElementById("home-xp-label").textContent = xpIntoLevel + " / 50 XP tak agla level";
+}
+
+// ---------- SHUFFLE HELPER ----------
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function pickRandom(arr, n){
+  return shuffle(arr).slice(0, n);
+}
+
+// ---------- DAILY TIP ROTATION ----------
+const DAILY_TIPS = [
+  "IMEI check karne ke liye *#06# dial karo, phir box aur settings se match karo.",
+  "Water damage indicator pink ho to phone reject karo — yeh permanent damage ki nishani hai.",
+  "Accessories pe 5x margin standard hai — 70 PKR ki handsfree 350 PKR mein bikti hai.",
+  "Flagship phones ki price daily check karo, normal phones ki weekly.",
+  "Phone slow ho to Clear Cache karo, Clear Data nahi — data safe rehta hai.",
+  "PTA DIRBS verify karne ke liye IMEI 8484 par SMS karo.",
+  "Customer se pehli line: 'Main shopkeeper nahi hoon, commission nahi milti.'",
+  "Helio G99 20k se kam budget mein best gaming processor hai."
+];
+(function setDailyTip(){
+  const idx = new Date().getDate() % DAILY_TIPS.length;
+  const el = document.getElementById("daily-tip");
+  if(el) el.textContent = DAILY_TIPS[idx];
+})();
+
+// ---------- MOTIVATIONAL MESSAGE BANKS ----------
+const MSG_CORRECT = ["Waah! Bilkul sahi!", "Ustaad ho tum!", "Zabardast jawab!", "Yehi hai asli gyaan!", "Shabaash, sahi pakda!"];
+const MSG_WRONG = ["Koi baat nahi — yeh seekh lo:", "Fikar nahi, agli baar sahi hoga:", "Yeh point yaad rakho:", "Chalo isay samjhte hain:"];
+
+function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+// ============================================================
+// MODE 1: QUIZ MODE
+// ============================================================
+let quizState = { questions:[], index:0, score:0, locked:false };
+
+document.getElementById("card-quiz").addEventListener("click", startQuiz);
+
+function startQuiz(){
+  quizState.questions = pickRandom(QUESTION_BANK, 10);
+  quizState.index = 0;
+  quizState.score = 0;
+  quizState.locked = false;
+  showScreen("quiz");
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion(){
+  const total = quizState.questions.length;
+  const q = quizState.questions[quizState.index];
+  document.getElementById("quiz-counter").textContent = `Q${quizState.index+1}/${total}`;
+  document.getElementById("quiz-progress-fill").style.width = ((quizState.index)/total*100)+"%";
+  document.getElementById("quiz-score-live").textContent = quizState.score + " pts";
+  document.getElementById("quiz-topic-tag").textContent = TOPIC_NAMES[q.topic] || "General";
+  document.getElementById("quiz-question-text").textContent = q.q;
+
+  const optsWrap = document.getElementById("quiz-options-list");
+  optsWrap.innerHTML = "";
+  const letters = ["A","B","C","D"];
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.addEventListener("click", ()=> handleQuizAnswer(i));
+    optsWrap.appendChild(btn);
+  });
+
+  document.getElementById("quiz-explain-box").classList.add("hidden");
+  document.getElementById("quiz-next-btn").classList.add("hidden");
+  quizState.locked = false;
+}
+
+function handleQuizAnswer(selectedIdx){
+  if(quizState.locked) return;
+  quizState.locked = true;
+  const q = quizState.questions[quizState.index];
+  const buttons = document.querySelectorAll("#quiz-options-list .option-btn");
+  buttons.forEach((b,i)=>{
+    b.classList.add("is-disabled");
+    if(i === q.correct) b.classList.add("is-correct");
+    if(i === selectedIdx && selectedIdx !== q.correct) b.classList.add("is-wrong");
+  });
+
+  const isCorrect = selectedIdx === q.correct;
+  if(isCorrect){ quizState.score += 10; addScore(10); }
+
+  const explainBox = document.getElementById("quiz-explain-box");
+  explainBox.classList.remove("hidden");
+  explainBox.classList.toggle("correct-box", isCorrect);
+  document.getElementById("quiz-explain-label").textContent = isCorrect ? randomFrom(MSG_CORRECT) : randomFrom(MSG_WRONG);
+  document.getElementById("quiz-explain-text").textContent = q.explain;
+  document.getElementById("quiz-score-live").textContent = quizState.score + " pts";
+
+  const nextBtn = document.getElementById("quiz-next-btn");
+  nextBtn.classList.remove("hidden");
+  nextBtn.textContent = (quizState.index === quizState.questions.length-1) ? "Result Dekho →" : "Aagay Badho →";
+}
+
+document.getElementById("quiz-next-btn").addEventListener("click", ()=>{
+  if(quizState.index < quizState.questions.length - 1){
+    quizState.index++;
+    renderQuizQuestion();
+  } else {
+    finishQuiz();
+  }
+});
+
+function finishQuiz(){
+  const total = quizState.questions.length;
+  const maxScore = total * 10;
+  const pct = quizState.score / maxScore;
+  showResult({
+    score: quizState.score,
+    scoreLabel: "Points",
+    pct: pct,
+    detail: `${quizState.score/10} / ${total} sawaalat sahi`,
+    replayFn: startQuiz
+  });
+}
+
+// ============================================================
+// SHARED RESULT SCREEN
+// ============================================================
+let currentReplayFn = null;
+
+function starsForPct(pct){
+  if(pct >= 0.8) return 5;
+  if(pct >= 0.6) return 4;
+  if(pct >= 0.4) return 3;
+  if(pct >= 0.2) return 2;
+  return 1;
+}
+
+function showResult({score, scoreLabel, pct, detail, replayFn, emoji}){
+  const stars = starsForPct(pct);
+  document.getElementById("result-score-num").textContent = score;
+  document.getElementById("result-score-label").textContent = scoreLabel || "Points";
+  document.getElementById("result-stars").textContent = "⭐".repeat(stars) + "☆".repeat(5-stars);
+  document.getElementById("result-detail").textContent = detail || "";
+  document.getElementById("result-emoji").textContent = emoji || (pct >= 0.6 ? "🏆" : pct >= 0.4 ? "👍" : "💪");
+
+  let msg;
+  if(pct >= 0.8) msg = "Waah! Tum to asli Mobile Ustaad ho!";
+  else if(pct >= 0.6) msg = "Bohat acha! Bas thora aur practice!";
+  else if(pct >= 0.4) msg = "Theek hai — seekhte raho, ustaad banoge!";
+  else msg = "Koi baat nahi, dobara try karo!";
+  document.getElementById("result-message").textContent = msg;
+
+  currentReplayFn = replayFn;
+  showScreen("result");
+}
+
+document.getElementById("result-replay-btn").addEventListener("click", ()=>{
+  if(typeof currentReplayFn === "function") currentReplayFn();
+});
+
+// ============================================================
+// MODE 3: LEVEL-UP MODE
+// ============================================================
+let levelPlayState = { levelIdx:0, index:0, score:0, locked:false };
+
+document.getElementById("card-levelup").addEventListener("click", ()=>{
+  renderLevelMap();
+  showScreen("levelmap");
+});
+
+function renderLevelMap(){
+  const wrap = document.getElementById("levelmap-list");
+  wrap.innerHTML = "";
+  LEVELS.forEach((lvl, idx)=>{
+    const unlocked = STATE.unlockedLevels[idx];
+    const stars = STATE.levelStars[idx] || 0;
+    const card = document.createElement("button");
+    card.className = "level-card" + (unlocked ? "" : " locked");
+    card.style.animationDelay = (idx*0.05)+"s";
+    card.innerHTML = `
+      <div class="level-num-badge">${unlocked ? lvl.icon : "🔒"}</div>
+      <div class="level-info">
+        <div class="level-title">Layer ${lvl.id}: ${lvl.name}</div>
+        <div class="level-desc">${lvl.desc}</div>
+        <div class="level-stars">${unlocked ? ("⭐".repeat(stars) + "☆".repeat(5-stars)) : "Pichla layer 3 stars se clear karo"}</div>
+      </div>
+    `;
+    if(unlocked){
+      card.addEventListener("click", ()=> startLevel(idx));
+    }
+    wrap.appendChild(card);
+  });
+}
+
+function startLevel(idx){
+  levelPlayState.levelIdx = idx;
+  levelPlayState.index = 0;
+  levelPlayState.score = 0;
+  levelPlayState.locked = false;
+  document.getElementById("lvl-name-header").textContent = "Layer " + LEVELS[idx].id + ": " + LEVELS[idx].name;
+  showScreen("levelplay");
+  renderLevelQuestion();
+}
+
+function renderLevelQuestion(){
+  const lvl = LEVELS[levelPlayState.levelIdx];
+  const total = lvl.questions.length;
+  const q = lvl.questions[levelPlayState.index];
+
+  document.getElementById("lvl-counter").textContent = `Q${levelPlayState.index+1}/${total}`;
+  document.getElementById("lvl-progress-fill").style.width = ((levelPlayState.index)/total*100)+"%";
+  document.getElementById("lvl-score-live").textContent = levelPlayState.score + " pts";
+  document.getElementById("lvl-question-text").textContent = q.q;
+
+  const optsWrap = document.getElementById("lvl-options-list");
+  optsWrap.innerHTML = "";
+  const letters = ["A","B","C","D"];
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.addEventListener("click", ()=> handleLevelAnswer(i));
+    optsWrap.appendChild(btn);
+  });
+
+  document.getElementById("lvl-explain-box").classList.add("hidden");
+  document.getElementById("lvl-next-btn").classList.add("hidden");
+  levelPlayState.locked = false;
+}
+
+function handleLevelAnswer(selectedIdx){
+  if(levelPlayState.locked) return;
+  levelPlayState.locked = true;
+  const lvl = LEVELS[levelPlayState.levelIdx];
+  const q = lvl.questions[levelPlayState.index];
+  const buttons = document.querySelectorAll("#lvl-options-list .option-btn");
+  buttons.forEach((b,i)=>{
+    b.classList.add("is-disabled");
+    if(i === q.correct) b.classList.add("is-correct");
+    if(i === selectedIdx && selectedIdx !== q.correct) b.classList.add("is-wrong");
+  });
+
+  const isCorrect = selectedIdx === q.correct;
+  if(isCorrect){ levelPlayState.score += 20; addScore(20); }
+
+  const explainBox = document.getElementById("lvl-explain-box");
+  explainBox.classList.remove("hidden");
+  explainBox.classList.toggle("correct-box", isCorrect);
+  document.getElementById("lvl-explain-label").textContent = isCorrect ? randomFrom(MSG_CORRECT) : randomFrom(MSG_WRONG);
+  document.getElementById("lvl-explain-text").textContent = q.explain;
+  document.getElementById("lvl-score-live").textContent = levelPlayState.score + " pts";
+
+  const nextBtn = document.getElementById("lvl-next-btn");
+  nextBtn.classList.remove("hidden");
+  nextBtn.textContent = (levelPlayState.index === lvl.questions.length-1) ? "Result Dekho →" : "Aagay Badho →";
+}
+
+document.getElementById("lvl-next-btn").addEventListener("click", ()=>{
+  const lvl = LEVELS[levelPlayState.levelIdx];
+  if(levelPlayState.index < lvl.questions.length - 1){
+    levelPlayState.index++;
+    renderLevelQuestion();
+  } else {
+    finishLevel();
+  }
+});
+
+function finishLevel(){
+  const idx = levelPlayState.levelIdx;
+  const lvl = LEVELS[idx];
+  const maxScore = lvl.questions.length * 20;
+  const pct = levelPlayState.score / maxScore;
+  const stars = starsForPct(pct);
+
+  // Save best stars for this level
+  STATE.levelStars[idx] = Math.max(STATE.levelStars[idx] || 0, stars);
+
+  // Unlock next level if 3+ stars
+  let unlockedNew = false;
+  if(stars >= 3 && idx+1 < LEVELS.length && !STATE.unlockedLevels[idx+1]){
+    STATE.unlockedLevels[idx+1] = true;
+    unlockedNew = true;
+  }
+  saveState();
+
+  const detailMsg = unlockedNew
+    ? `Agla layer "${LEVELS[idx+1].name}" unlock ho gaya hai!`
+    : (stars >= 3 ? "Agla layer pehle se unlock hai." : "3 stars chahiye agla layer unlock karne ke liye.");
+
+  showResult({
+    score: levelPlayState.score,
+    scoreLabel: "Layer Points",
+    pct: pct,
+    detail: detailMsg,
+    replayFn: ()=> startLevel(idx),
+    emoji: unlockedNew ? "🔓" : undefined
+  });
+}
+
+// ============================================================
+// MODE 2: ROLE-PLAY MODE (AI-Powered)
+// ============================================================
+let rpState = {
+  scenario:null,
+  history:[],      // {role:'customer'|'user', text}
+  exchangeCount:0,
+  scores:[],
+  busy:false
+};
+
+document.getElementById("card-roleplay").addEventListener("click", startRoleplay);
+document.getElementById("rp-new-customer-btn").addEventListener("click", startRoleplay);
+
+function startRoleplay(){
+  const scenario = randomFrom(ROLEPLAY_SCENARIOS);
+  rpState = { scenario, history:[], exchangeCount:0, scores:[], busy:false };
+  document.getElementById("rp-scenario-name").textContent = scenario.icon + " " + scenario.name;
+  document.getElementById("rp-exchange-counter").textContent = "Exchange 1/4";
+  document.getElementById("rp-score-live").textContent = "Avg score: —";
+  document.getElementById("rp-chat-body").innerHTML = "";
+  document.getElementById("rp-end-session-btn").classList.add("hidden");
+  document.getElementById("rp-input").value = "";
+  document.getElementById("rp-input").disabled = false;
+  document.getElementById("rp-send-btn").disabled = false;
+  showScreen("roleplay");
+
+  addSystemIntroBubble(scenario);
+  requestCustomerOpeningLine();
+}
+
+function addSystemIntroBubble(scenario){
+  const body = document.getElementById("rp-chat-body");
+  const row = document.createElement("div");
+  row.className = "chat-bubble-row feedback";
+  row.innerHTML = `<div class="chat-bubble feedback-bubble">${scenario.icon} <b>${scenario.name}</b><br>${scenario.intro}</div>`;
+  body.appendChild(row);
+  scrollChatToBottom();
+}
+
+function addChatBubble(role, text){
+  const body = document.getElementById("rp-chat-body");
+  const row = document.createElement("div");
+  if(role === "customer"){
+    row.className = "chat-bubble-row customer";
+    row.innerHTML = `<div class="chat-bubble customer-bubble"><div class="chat-label">Customer</div>${escapeHtml(text)}</div>`;
+  } else if(role === "user"){
+    row.className = "chat-bubble-row user";
+    row.innerHTML = `<div class="chat-bubble user-bubble"><div class="chat-label" style="color:rgba(255,255,255,0.75)">Tum (Ustaad)</div>${escapeHtml(text)}</div>`;
+  } else {
+    row.className = "chat-bubble-row feedback";
+    row.innerHTML = `<div class="chat-bubble feedback-bubble">${escapeHtml(text)}</div>`;
+  }
+  body.appendChild(row);
+  scrollChatToBottom();
+  return row;
+}
+
+function addLoadingBubble(){
+  const body = document.getElementById("rp-chat-body");
+  const row = document.createElement("div");
+  row.className = "chat-bubble-row customer";
+  row.id = "rp-loading-row";
+  row.innerHTML = `<div class="chat-bubble customer-bubble"><div class="bounce-dots"><span></span><span></span><span></span></div></div>`;
+  body.appendChild(row);
+  scrollChatToBottom();
+}
+
+function removeLoadingBubble(){
+  const row = document.getElementById("rp-loading-row");
+  if(row) row.remove();
+}
+
+function scrollChatToBottom(){
+  const body = document.getElementById("rp-chat-body");
+  setTimeout(()=>{ body.scrollTop = body.scrollHeight; }, 30);
+}
+
+function escapeHtml(str){
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function setRpBusy(busy){
+  rpState.busy = busy;
+  document.getElementById("rp-input").disabled = busy;
+  document.getElementById("rp-send-btn").disabled = busy;
+}
+
+async function callClaudeAPI(systemPrompt, messages){
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: messages
+    })
+  });
+  if(!response.ok){
+    throw new Error("API request failed: " + response.status);
+  }
+  const data = await response.json();
+  const textBlock = (data.content || []).find(b => b.type === "text");
+  return textBlock ? textBlock.text : "";
+}
+
+function buildRoleplaySystemPrompt(scenario){
+  return `Tu ek role-play customer simulator hai Mobile Ustaad game ke liye.
+${scenario.systemContext}
+
+Natural Pakistani customer ki tarah baat kar — Urdu/Roman Urdu mein, casual tone. Sirf 2-3 lines mein jawab do, lamba lecture na do.
+
+Yeh ek conversation hai jahan tu customer hai aur doosra banda (Mobile Ustaad advisor) tujhe respond kar raha hai. Har advisor ke jawab ke baad, customer ki tarah natural reply do (2-3 lines), PHIR ek nayi line mein advisor ke us jawab ko evaluate kar:
+FEEDBACK: Score X/10 — [ek sentence reason Urdu/Roman Urdu mein, ke advisor ka jawab kitna acha tha customer handling, honesty, aur correct knowledge ke hisaab se]
+
+Format hamesha yeh hona chahiye:
+[customer ka natural reply, 2-3 lines]
+FEEDBACK: Score X/10 — [reason]
+
+Sirf yeh do parts do, kuch aur na likho. Pehli baar (jab advisor ne kuch nahi kaha hota) sirf customer opening line do, FEEDBACK mat do.`;
+}
+
+function requestCustomerOpeningLine(){
+  setRpBusy(true);
+  addLoadingBubble();
+  const sys = buildRoleplaySystemPrompt(rpState.scenario);
+  callClaudeAPI(sys, [{role:"user", content:"[CONVERSATION SHURU — customer ki opening line do, sirf customer ka dialogue, FEEDBACK mat dena]"}])
+    .then(text=>{
+      removeLoadingBubble();
+      const cleanText = text.split("FEEDBACK:")[0].trim();
+      rpState.history.push({role:"customer", text: cleanText});
+      addChatBubble("customer", cleanText || "Salam, mujhe ek phone dekhna hai...");
+      setRpBusy(false);
+      document.getElementById("rp-input").focus();
+    })
+    .catch(err=>{
+      removeLoadingBubble();
+      const fallback = "Salam bhai, mujhe phone dekhna hai... (network issue — phir bhi try karo jawab dene ka)";
+      rpState.history.push({role:"customer", text: fallback});
+      addChatBubble("customer", fallback);
+      setRpBusy(false);
+      showToast("AI se connect nahi ho saka — internet check karo");
+    });
+}
+
+document.getElementById("rp-send-btn").addEventListener("click", sendRoleplayMessage);
+document.getElementById("rp-input").addEventListener("keydown", (e)=>{
+  if(e.key === "Enter") sendRoleplayMessage();
+});
+
+function sendRoleplayMessage(){
+  if(rpState.busy) return;
+  const input = document.getElementById("rp-input");
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = "";
+
+  addChatBubble("user", text);
+  rpState.history.push({role:"user", text});
+  rpState.exchangeCount++;
+  document.getElementById("rp-exchange-counter").textContent = `Exchange ${Math.min(rpState.exchangeCount,4)}/4`;
+
+  setRpBusy(true);
+  addLoadingBubble();
+
+  const sys = buildRoleplaySystemPrompt(rpState.scenario);
+  const apiMessages = rpState.history.map(h => ({
+    role: h.role === "customer" ? "assistant" : "user",
+    content: h.text
+  }));
+
+  callClaudeAPI(sys, apiMessages)
+    .then(rawText=>{
+      removeLoadingBubble();
+      let customerReply = rawText;
+      let feedbackText = "";
+      const fbIdx = rawText.indexOf("FEEDBACK:");
+      if(fbIdx !== -1){
+        customerReply = rawText.slice(0, fbIdx).trim();
+        feedbackText = rawText.slice(fbIdx + "FEEDBACK:".length).trim();
+      }
+
+      // Parse score X/10
+      let scoreVal = null;
+      const m = feedbackText.match(/(\d+)\s*\/\s*10/);
+      if(m) scoreVal = parseInt(m[1], 10);
+      if(scoreVal !== null){
+        rpState.scores.push(scoreVal);
+        const avg = (rpState.scores.reduce((a,b)=>a+b,0) / rpState.scores.length).toFixed(1);
+        document.getElementById("rp-score-live").textContent = "Avg score: " + avg + "/10";
+      }
+
+      if(customerReply){
+        rpState.history.push({role:"customer", text: customerReply});
+        addChatBubble("customer", customerReply);
+      }
+      if(feedbackText){
+        addChatBubble("feedback", "🎯 " + feedbackText);
+      }
+
+      setRpBusy(false);
+
+      if(rpState.exchangeCount >= 4){
+        document.getElementById("rp-end-session-btn").classList.remove("hidden");
+        document.getElementById("rp-input").disabled = true;
+        document.getElementById("rp-send-btn").disabled = true;
+      } else {
+        document.getElementById("rp-input").focus();
+      }
+    })
+    .catch(err=>{
+      removeLoadingBubble();
+      setRpBusy(false);
+      showToast("AI jawab nahi de saka — dobara try karo ya 'Session Khatam' dabao");
+    });
+}
+
+document.getElementById("rp-end-session-btn").addEventListener("click", finishRoleplay);
+
+function finishRoleplay(){
+  let avgScore10 = 0;
+  if(rpState.scores.length){
+    avgScore10 = rpState.scores.reduce((a,b)=>a+b,0) / rpState.scores.length;
+  }
+  const gamePoints = Math.round(avgScore10 * 2 * rpState.scores.length); // AI score x2 per exchange, summed
+  addScore(gamePoints);
+  const pct = avgScore10 / 10;
+
+  showResult({
+    score: gamePoints,
+    scoreLabel: "Points (AI Score × 2)",
+    pct: pct,
+    detail: `Average AI score: ${avgScore10.toFixed(1)}/10 across ${rpState.scores.length} exchanges`,
+    replayFn: startRoleplay
+  });
+}
+
+// ============================================================
+// MODE 4: ENDLESS USTAAD (Infinite, AI-Generated, Escalating Difficulty)
+// ============================================================
+let endlessState = {
+  tier:1,
+  streak:0,
+  score:0,
+  askedQuestions:[],   // text of questions already asked this run, to avoid repeats
+  currentQ:null,
+  locked:false,
+  busy:false
+};
+
+document.getElementById("card-endless").addEventListener("click", startEndless);
+
+function startEndless(){
+  endlessState = { tier:1, streak:0, score:0, askedQuestions:[], currentQ:null, locked:false, busy:false };
+  updateEndlessHud();
+  showScreen("endless");
+  fetchEndlessQuestion();
+}
+
+function updateEndlessHud(){
+  document.getElementById("endless-tier").textContent = endlessState.tier;
+  document.getElementById("endless-streak").textContent = endlessState.streak;
+  document.getElementById("endless-score").textContent = endlessState.score;
+  document.getElementById("endless-best").textContent = STATE.endlessBestTier;
+}
+
+// ---- Difficulty tier descriptors ----
+function tierBand(tier){
+  if(tier <= 3) return {label:"Bunyaadi", labelClass:"diff-easy", style:"basic recall — simple direct fact-based question about specs, IMEI, basic terms"};
+  if(tier <= 6) return {label:"Darmiyana", labelClass:"diff-med", style:"comparison/judgment — compare two options, spot a trick, or judge what's correct given a short scenario"};
+  if(tier <= 9) return {label:"Mushkil", labelClass:"diff-hard", style:"scenario math/multi-factor — involves calculation (depreciation %, profit margin, ROI) or weighing 2+ competing factors before answering"};
+  return {label:"Infinite", labelClass:"diff-infinite", style:"expert edge-case — invent a tricky combo scenario (conflicting specs, ambiguous customer demand, rare market edge-case) that requires real floor experience to answer correctly, not textbook recall"};
+}
+
+const ENDLESS_TOPICS = ["specs","tricks","inspection","software","pricing","customer","pta","brands"];
+
+function fetchEndlessQuestion(){
+  endlessState.busy = true;
+  document.getElementById("endless-loading").classList.remove("hidden");
+  document.getElementById("endless-question-card").classList.add("hidden");
+  document.getElementById("endless-options-list").innerHTML = "";
+  document.getElementById("endless-explain-box").classList.add("hidden");
+  document.getElementById("endless-next-btn").classList.add("hidden");
+
+  const loadingMsgs = [
+    "Ustaad mushkil sawaal soch raha hai...",
+    "Market se nayi situation nikaal raha hai...",
+    "Tumhari mushkil level set kar raha hai...",
+  ];
+  document.getElementById("endless-loading-text").textContent = randomFrom(loadingMsgs);
+
+  const band = tierBand(endlessState.tier);
+  const topic = randomFrom(ENDLESS_TOPICS);
+  const sys = buildEndlessSystemPrompt(band, topic);
+
+  callClaudeAPI(sys, [{role:"user", content:"Naya sawaal banao JSON format mein, jaisa system prompt mein bataya gaya hai. Sirf raw JSON return karo, kuch aur text nahi."}])
+    .then(rawText=>{
+      const parsed = parseEndlessJSON(rawText);
+      if(parsed){
+        endlessState.currentQ = parsed;
+        endlessState.askedQuestions.push(parsed.q);
+        renderEndlessQuestion(band);
+      } else {
+        useLocalFallbackQuestion(band, topic);
+      }
+    })
+    .catch(()=>{
+      useLocalFallbackQuestion(band, topic);
+    });
+}
+
+function buildEndlessSystemPrompt(band, topic){
+  const avoidList = endlessState.askedQuestions.slice(-15).join(" | ");
+  return `Tu Mobile Ustaad game ke liye "Endless Ustaad" mode ka sawaal generator hai — Pakistan ke mobile phone market (Karachi, Millennium Mall) ke context mein.
+
+Topic: ${topic}
+Difficulty tier: ${endlessState.tier} (${band.label}) — ${band.style}
+
+In sawaalat se bachna (already pooche gaye hain, repeat na karna): ${avoidList || "(koi nahi abhi)"}
+
+Sirf yeh exact JSON object return karo, koi extra text, koi markdown backticks nahi:
+{"q":"sawaal Roman Urdu/Urdu mix mein","options":["option A","option B","option C","option D"],"correct":0,"explain":"1-2 line explanation Roman Urdu mein"}
+
+"correct" 0-3 ka index hai jo sahi option batata hai. Sawaal Pakistani mobile market ki real practical knowledge pe based ho — specs, fake detection, pricing, software fixes, customer dealing, PTA, ya brands mein se. Tier ${endlessState.tier} ke mutabiq difficulty rakho.`;
+}
+
+function parseEndlessJSON(rawText){
+  try{
+    let cleaned = rawText.trim();
+    cleaned = cleaned.replace(/^```json/i, "").replace(/^```/,"").replace(/```$/,"").trim();
+    const firstBrace = cleaned.indexOf("{");
+    const lastBrace = cleaned.lastIndexOf("}");
+    if(firstBrace === -1 || lastBrace === -1) return null;
+    cleaned = cleaned.slice(firstBrace, lastBrace+1);
+    const obj = JSON.parse(cleaned);
+    if(!obj.q || !Array.isArray(obj.options) || obj.options.length !== 4 || typeof obj.correct !== "number"){
+      return null;
+    }
+    return obj;
+  }catch(e){
+    return null;
+  }
+}
+
+// ---- Local fallback generator (offline-safe, used when AI call fails) ----
+function useLocalFallbackQuestion(band, topic){
+  const generated = generateLocalQuestion(band, endlessState.tier, topic);
+  endlessState.currentQ = generated;
+  endlessState.askedQuestions.push(generated.q);
+  renderEndlessQuestion(band);
+  showToast("AI thora slow hai — local sawaal use kar rahe hain");
+}
+
+function generateLocalQuestion(band, tier, topic){
+  // Pull a base question from the bank matching topic, then mutate difficulty presentation
+  let pool = QUESTION_BANK.filter(q => q.topic === topic);
+  if(pool.length === 0) pool = QUESTION_BANK;
+  // try to avoid repeats already asked this run
+  const fresh = pool.filter(q => !endlessState.askedQuestions.includes(q.q));
+  const base = randomFrom(fresh.length ? fresh : pool);
+
+  let qText = base.q;
+  if(tier > 6){
+    qText = `[Tier ${tier} Scenario] Ek customer ki situation mein: ${base.q}`;
+  } else if(tier > 3){
+    qText = `[Tier ${tier}] ${base.q}`;
+  }
+
+  return {
+    q: qText,
+    options: base.options.slice(),
+    correct: base.correct,
+    explain: base.explain
+  };
+}
+
+function renderEndlessQuestion(band){
+  document.getElementById("endless-loading").classList.add("hidden");
+  document.getElementById("endless-question-card").classList.remove("hidden");
+  document.getElementById("endless-diff-label").innerHTML = `<span class="diff-tag ${band.labelClass}">Tier ${endlessState.tier} — ${band.label}</span>`;
+  document.getElementById("endless-question-text").textContent = endlessState.currentQ.q;
+
+  const optsWrap = document.getElementById("endless-options-list");
+  optsWrap.innerHTML = "";
+  const letters = ["A","B","C","D"];
+  endlessState.currentQ.options.forEach((opt, i)=>{
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.addEventListener("click", ()=> handleEndlessAnswer(i));
+    optsWrap.appendChild(btn);
+  });
+
+  endlessState.locked = false;
+  endlessState.busy = false;
+}
+
+function handleEndlessAnswer(selectedIdx){
+  if(endlessState.locked || endlessState.busy) return;
+  endlessState.locked = true;
+  const q = endlessState.currentQ;
+  const buttons = document.querySelectorAll("#endless-options-list .option-btn");
+  buttons.forEach((b,i)=>{
+    b.classList.add("is-disabled");
+    if(i === q.correct) b.classList.add("is-correct");
+    if(i === selectedIdx && selectedIdx !== q.correct) b.classList.add("is-wrong");
+  });
+
+  const isCorrect = selectedIdx === q.correct;
+  const explainBox = document.getElementById("endless-explain-box");
+  explainBox.classList.remove("hidden");
+  explainBox.classList.toggle("correct-box", isCorrect);
+
+  const nextBtn = document.getElementById("endless-next-btn");
+
+  if(isCorrect){
+    const pointsThisQ = endlessState.tier * 10;
+    endlessState.score += pointsThisQ;
+    endlessState.streak += 1;
+    addScore(pointsThisQ);
+
+    // Escalate tier every 3 correct in a row
+    if(endlessState.streak % 3 === 0){
+      endlessState.tier += 1;
+    }
+
+    document.getElementById("endless-explain-label").textContent = randomFrom(MSG_CORRECT) + ` (+${pointsThisQ} pts)`;
+    document.getElementById("endless-explain-text").textContent = q.explain;
+    nextBtn.classList.remove("hidden");
+    nextBtn.textContent = "Agla Sawaal →";
+    updateEndlessHud();
+  } else {
+    document.getElementById("endless-explain-label").textContent = "Game Over — yahin tak pahunche!";
+    document.getElementById("endless-explain-text").textContent = q.explain;
+    nextBtn.classList.remove("hidden");
+    nextBtn.textContent = "Result Dekho →";
+    endlessState.gameOver = true;
+    updateEndlessHud();
+  }
+}
+
+document.getElementById("endless-next-btn").addEventListener("click", ()=>{
+  if(endlessState.gameOver){
+    finishEndless();
+  } else {
+    fetchEndlessQuestion();
+  }
+});
+
+function finishEndless(){
+  const isNewBest = endlessState.tier > STATE.endlessBestTier;
+  STATE.endlessBestTier = Math.max(STATE.endlessBestTier, endlessState.tier);
+  STATE.endlessBestScore = Math.max(STATE.endlessBestScore, endlessState.score);
+  saveState();
+
+  const pct = Math.min(1, endlessState.tier / 12);
+  showResult({
+    score: endlessState.score,
+    scoreLabel: "Points",
+    pct: pct,
+    detail: isNewBest
+      ? `Naya record! Tier ${endlessState.tier} tak pahunche — pehle se behtar!`
+      : `Tier ${endlessState.tier} tak pahunche. Best abhi bhi Tier ${STATE.endlessBestTier} hai — tod do ise!`,
+    replayFn: startEndless,
+    emoji: isNewBest ? "🔥" : "♾️"
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+refreshHomeStats();
+showScreen("home");
+
+</script>
+</body>
+</html>
